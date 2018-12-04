@@ -1,0 +1,173 @@
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            //###########seleciona tudo#################
+
+            $('#master').on('click', function(e) {
+                if($(this).is(':checked',true))
+                {
+                    $(".sub_chk").prop('checked', true);
+                } else {
+                    $(".sub_chk").prop('checked',false);
+                }
+            });
+        //###########Fim Seleciona tudo#################
+
+        //##########Acao Delete All#####################
+            $('.delete_all').on('click', function(e) {
+
+
+                var allVals = [];
+                $(".sub_chk:checked").each(function() {
+                    allVals.push($(this).attr('data-id'));
+                });
+
+
+                if(allVals.length <=0)
+                {
+                    alert("Selecione pelo menos uma linha.");
+                }  else {
+
+
+                    var check = confirm("Are you sure you want to delete this row?");
+                    if(check == true){
+
+
+                        var join_selected_values = allVals.join(",");
+
+
+                        $.ajax({
+                            url: $(this).data('url'),
+                            type: 'DELETE',
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                            data: 'ids='+join_selected_values,
+                            success: function (data) {
+                                if (data['success']) {
+                                    $(".sub_chk:checked").each(function() {
+                                        $(this).parents("tr").remove();
+                                    });
+                                    alert(data['success']);
+                                } else if (data['error']) {
+                                    alert(data['error']);
+                                } else {
+                                    alert('Algo Saiu Errado!!');
+                                }
+                            },
+                            error: function (data) {
+                                alert(data.responseText);
+                            }
+                        });
+
+
+                        $.each(allVals, function( index, value ) {
+                            $('table tr').filter("[data-row-id='" + value + "']").remove();
+                        });
+                    }
+                }
+            });
+
+        //###############Liga o data-toggle#################
+            $('[data-toggle=confirmation]').confirmation({
+                rootSelector: '[data-toggle=confirmation]',
+                onConfirm: function (event, element) {
+                    element.trigger('confirm');
+                }
+            });
+
+
+            $(document).on('confirm', function (e) {
+                var ele = e.target;
+                e.preventDefault();
+
+
+                $.ajax({
+                    url: ele.href,
+                    type: 'DELETE',
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: function (data) {
+                        if (data['success']) {
+                            $("#" + data['tr']).slideUp("slow");
+                            alert(data['success']);
+                        } else if (data['error']) {
+                            alert(data['error']);
+                        } else {
+                            alert('Algo Saiu Errado!!');
+                        }
+                    },
+                    error: function (data) {
+                        alert(data.responseText);
+                    }
+                });
+
+
+                return false;
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="table-container">
+                                                <table id="mytable" class="table table-bordred table-striped">
+                                                    <thead>
+                                                    <th width="50px"><input type="checkbox" id="master"></th>
+                                                    <th>Status do Extrato</th>
+                                                    <th>Valor Extrato</th>
+                                                    <th>Numero Bancário</th>
+                                                    <th>Vencimento</th>
+                                                    <th>Documento PDF</th>
+                                                    <th>Contestação</th>
+                                                    <th>Ação</th>
+                                                    <th>Remover</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    @if($contas->count())
+                                                        @foreach($contas as $conta)
+                                                            <tr id="tr_{{$conta->id}}">
+                                                                <td><input type="checkbox" class="sub_chk" data-id="{{$conta->id}}"></td>
+                                                                <td>@switch($conta->statusConta)
+                                                                        @case('A')
+                                                                        Aberto
+                                                                        @break
+                                                                        @case('AP')
+                                                                        Aprovado
+                                                                        @break
+                                                                        @case('IN')
+                                                                        Invalidado
+                                                                        @break
+                                                                        @default
+                                                                        Sem identificação
+                                                                @endswitch
+                                                                <td>R$:{{$conta->valorConta}}</td>
+                                                                <td>{{$conta->NumeroBancario}}</td>
+                                                                <td><?php $data = new DateTime($conta->vencimentoConta);
+                                                                    echo  $data->format('d-m-Y');?>
+                                                                </td>
+                                                                <td> <a  class="btn btn-default" href="{{ url('myproductsDeleteAll') }}">Baixar PDF</a></td>
+                                                                <td>@if($conta->idContestacao == 0 ) <a  class="btn btn-default" href="{{ url('myproductsDeleteAll') }}">Criar Contestação</a> @else <a  class="btn btn-default" href="{{ url('myproductsDeleteAll') }}">Ver Contestação</a> @endif</td>
+                                                                <td> <a  class="btn btn-default" href="{{ url('myproductsDeleteAll') }}">Aprovar</a></td>
+                                                                <td>
+                                                                    <a  class="btn btn-default" href="{{ url('myproductsDeleteAll') }}">Remover</a>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @else
+                                                        <tr>
+                                                            <td colspan="8">Sem Registros !!</td>
+                                                        </tr>
+                                                    @endif
+                                                    </tbody>
+
+                                                </table>
+                                            </div>

@@ -1,0 +1,2 @@
+composer require rguedes/pdfmerger
+composer require barryvdh/laravel-dompdf
