@@ -1,2 +1,2 @@
-# gauser
-gauser
+# Sistema GDC
+Projeto inicial
