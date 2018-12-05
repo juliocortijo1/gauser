@@ -142,7 +142,7 @@ class ContasController extends Controller
         $id_contrato = $id;
 
 
-        return view('conta.search',compact('contas','contrato','id_contrato'))->with('i',(request()->input('page',1) -1) *5);;
+        return view('conta.search',compact('contas','contrato','id_contrato'))->with('i',(request()->input('page',1) -1) *5);
 
     }
 
@@ -163,7 +163,7 @@ class ContasController extends Controller
                         , 'tblContas.idContrato', 'tblSecretaria.descSecretaria', 'tblFornecedor.nomeFantasia'
                         , 'tblContratos.descContrato', 'users.name')
                     ->where('tblContas.statusConta', $tipo)
-                    ->paginate(10);
+                    ->get();
                 }else{
                 $secretarias = Secretaria::all();
                 $contas = Conta::join('tblContratos', 'tblContratos.id', '=', 'tblContas.idContrato')
@@ -175,7 +175,7 @@ class ContasController extends Controller
                         , 'tblContas.idContrato', 'tblSecretaria.descSecretaria', 'tblFornecedor.nomeFantasia'
                         , 'tblContratos.descContrato')
                     ->where('tblContas.statusConta', $tipo)
-                    ->paginate(10);
+                    ->get();
             }
         }else{
             $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
@@ -195,7 +195,7 @@ class ContasController extends Controller
                     ->where('tblContas.statusConta', $tipo)
                     ->whereIn('tblContratos.idSecretaria', $ids)
                     ->whereNotIn('tblContratos.idSecretaria', [1])
-                    ->paginate(10);
+                    ->get();
             }else{
                 $secretarias = Secretaria::whereIn('id', $ids)
                     ->get();
@@ -209,7 +209,7 @@ class ContasController extends Controller
                     ->where('tblContas.statusConta', $tipo)
                     ->whereIn('tblContratos.idSecretaria', $ids)
                     ->whereNotIn('tblContratos.idSecretaria', [1])
-                    ->paginate(10);
+                    ->get();
             }
         }
         return view('conta.searchall',compact('contas','tipo','secretarias'))->with('i',(request()->input('page',1) -1) *10);
@@ -245,9 +245,9 @@ class ContasController extends Controller
                                 ->take(1)
                                 ->get();
                             $contas = Conta::where('idContrato', $request->get('id_contrato'))
-                                ->where('NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
+                                ->where('NumeroBancario', 'LIKE', '%' . $request->get('valor') . '%')
                                 ->where('statusConta', 'LIKE', $request->get('st_ex'))
-                                ->paginate(5);
+                               ->get();
 
                             break;
 
@@ -256,10 +256,10 @@ class ContasController extends Controller
                                 ->take(1)
                                 ->get();
                             $contas = Conta::where('idContrato', $request->get('id_contrato'))
-                                ->where('NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
+                                ->where('NumeroBancario', 'LIKE', '%' . $request->get('valor') . '%')
                                 ->where('statusConta', 'LIKE', $request->get('st_ex'))
                                 ->whereBetween('criado_em', [$request->get('date_in'), $request->get('date_fim')])
-                                ->paginate(5);
+                               ->get();
 
                             break;
 
@@ -268,10 +268,10 @@ class ContasController extends Controller
                                 ->take(1)
                                 ->get();
                             $contas = Conta::where('idContrato', $request->get('id_contrato'))
-                                ->where('NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
+                                ->where('NumeroBancario', 'LIKE', '%' . $request->get('valor') . '%')
                                 ->where('statusConta', 'LIKE', $request->get('st_ex'))
                                 ->whereBetween('AprovadoEm', [$request->get('date_in'), $request->get('date_fim')])
-                                ->paginate(5);
+                               ->get();
 
                             break;
                         default:
@@ -279,9 +279,9 @@ class ContasController extends Controller
                                 ->take(1)
                                 ->get();
                             $contas = Conta::where('idContrato', $request->get('id_contrato'))
-                                ->where('NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
+                                ->where('NumeroBancario', 'LIKE', '%' . $request->get('valor') . '%')
                                 ->where('statusConta', 'LIKE', $request->get('st_ex'))
-                                ->paginate(5);
+                               ->get();
 
                             break;
                     }
@@ -311,7 +311,7 @@ class ContasController extends Controller
                                 ->where('NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                 ->where('statusConta', 'LIKE', $request->get('st_ex'))
                                 ->whereBetween('vencimentoConta', [$datain, $datafim])
-                            ->paginate(5);
+                           ->get();
 
                             break;
 
@@ -323,7 +323,7 @@ class ContasController extends Controller
                                 ->where('NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                 ->where('statusConta', 'LIKE', $request->get('st_ex'))
                                 ->whereBetween('criado_em', [$datain, $datafim])
-                                ->paginate(5);
+                               ->get();
 
                             break;
 
@@ -335,7 +335,7 @@ class ContasController extends Controller
                                 ->where('NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                 ->where('statusConta', 'LIKE', $request->get('st_ex'))
                                 ->whereBetween('AprovadoEm', [$datain, $datafim])
-                                ->paginate(5);
+                               ->get();
 
                             break;
                         default:
@@ -345,7 +345,7 @@ class ContasController extends Controller
                             $contas = Conta::where('idContrato', $request->get('id_contrato'))
                                 ->where('NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                 ->where('statusConta', 'LIKE', $request->get('st_ex'))
-                                ->paginate(5);
+                               ->get();
 
                             break;
                     }
@@ -395,9 +395,11 @@ class ContasController extends Controller
                                     , 'tblContas.idContrato', 'tblSecretaria.descSecretaria', 'tblFornecedor.nomeFantasia'
                                     , 'tblContratos.descContrato','users.name')
                                 ->where('tblContas.statusConta', 'LIKE', $request->get('st_ex'))
-                                ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
-                                ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
-                                ->paginate(5);
+                                ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%");
+                                if($request->get('sec') <> '%'){
+                                    $contas->where('tblContratos.idSecretarias', 'LIKE',$request->get('sec'));
+                                }
+                                    $contas->get();
 
 
                         }else {
@@ -409,10 +411,12 @@ class ContasController extends Controller
                                     , 'tblContas.vencimentoConta', 'tblContas.criado_em', 'tblContas.idContestacao'
                                     , 'tblContas.idContrato', 'tblSecretaria.descSecretaria', 'tblFornecedor.nomeFantasia'
                                     , 'tblContratos.descContrato')
-                                ->where('tblContas.statusConta', 'LIKE', $request->get('st_ex'))
-                                ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
-                                ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
-                                ->paginate(5);
+                                ->where('tblContas.statusConta', 'LIKE',$request->get('st_ex'))
+                                ->where('tblContas.NumeroBancario', 'LIKE', $request->get('valor'));
+                                if($request->get('sec') <> '%'){
+                                    $contas->where('tblContratos.idSecretarias', 'LIKE',$request->get('sec'));
+                                }
+                                    $contas->get();
                         }
                     } else {
                         $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
@@ -429,10 +433,10 @@ class ContasController extends Controller
                                     , 'tblContas.idContrato', 'tblSecretaria.descSecretaria', 'tblFornecedor.nomeFantasia'
                                     , 'tblContratos.descContrato')
                                 ->where('tblContas.statusConta', 'LIKE', $request->get('st_ex'))
-                                ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
+                                ->where('tblContas.NumeroBancario', 'LIKE',$request->get('valor'))
                                 ->whereIn('tblContratos.idSecretaria', $ids)
-                                ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
-                                ->paginate(5);
+                                ->where('tblContratos.idSecretarias', 'LIKE',$request->get('sec'))
+                               ->get();
                         }else{
                             $secretarias = Secretaria::whereIn('id', $ids)
                                 ->get();
@@ -448,9 +452,10 @@ class ContasController extends Controller
                                 ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                 ->whereIn('tblContratos.idSecretaria', $ids)
                                 ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
-                                ->paginate(5);
+                              ->get();
                         }
                     }
+                 break;   
                 case 'forn':
                     $permissão = AssignSecretaria::where('idUsuario', \auth()->user()->id)
                         ->where('idSecretaria', '1')
@@ -469,7 +474,7 @@ class ContasController extends Controller
                                 ->where('tblContas.statusConta', 'LIKE', $request->get('st_ex'))
                                 ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                 ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
-                                ->paginate(5);
+                               ->get();
                         }else{
                             $secretarias = Secretaria::all();
                             $contas = Conta::join('tblContratos', 'tblContratos.id', '=', 'tblContas.idContrato')
@@ -482,7 +487,7 @@ class ContasController extends Controller
                                 ->where('tblContas.statusConta', 'LIKE', $request->get('st_ex'))
                                 ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                 ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
-                                ->paginate(5);
+                               ->get();
                         }
                     } else {
                         $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
@@ -503,7 +508,7 @@ class ContasController extends Controller
                                 ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                 ->whereIn('tblContratos.idSecretaria', $ids)
                                 ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
-                                ->paginate(5);
+                               ->get();
                         }else{
                             $secretarias = Secretaria::whereIn('id', $ids)
                                 ->get();
@@ -518,7 +523,7 @@ class ContasController extends Controller
                                 ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                 ->whereIn('tblContratos.idSecretaria', $ids)
                                 ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
-                                ->paginate(5);
+                               ->get();
                         }
                     }
                     break;
@@ -562,7 +567,7 @@ class ContasController extends Controller
                                             ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.vencimentoConta', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }else{
                                         $secretarias = Secretaria::all();
                                         $contas = Conta::join('tblContratos', 'tblContratos.id', '=', 'tblContas.idContrato')
@@ -576,7 +581,7 @@ class ContasController extends Controller
                                             ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.vencimentoConta', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 } else {
                                     $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
@@ -596,7 +601,7 @@ class ContasController extends Controller
                                         ->whereIn('tblContratos.idSecretaria', $ids)
                                         ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                         ->whereBetween('tblContas.vencimentoConta', [$datain, $datafim])
-                                        ->paginate(5);
+                                       ->get();
                                 }
                     break;
                     case 'dc':
@@ -618,7 +623,7 @@ class ContasController extends Controller
                                         ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                         ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                         ->whereBetween('tblContas.criado_em', [$datain, $datafim])
-                                        ->paginate(5);
+                                       ->get();
                                     }else{
                                         $secretarias = Secretaria::all();
                                         $contas = Conta::join('tblContratos', 'tblContratos.id', '=', 'tblContas.idContrato')
@@ -632,7 +637,7 @@ class ContasController extends Controller
                                             ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.criado_em', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 } else {
                                     $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
@@ -654,7 +659,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.criado_em', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }else{
                                         $secretarias = Secretaria::whereIn('id', $ids)
                                             ->get();
@@ -670,7 +675,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.criado_em', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 }
                     break;
@@ -693,7 +698,7 @@ class ContasController extends Controller
                                             ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.AprovadoEm', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }else{
                                         $secretarias = Secretaria::all();
                                         $contas = Conta::join('tblContratos', 'tblContratos.id', '=', 'tblContas.idContrato')
@@ -707,7 +712,7 @@ class ContasController extends Controller
                                             ->where('tblContas.NumeroBancario', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.AprovadoEm', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 } else {
                                     $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
@@ -729,7 +734,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.AprovadoEm', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }else{
                                         $secretarias = Secretaria::whereIn('id', $ids)
                                             ->get();
@@ -745,7 +750,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.AprovadoEm', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                   }
                     break;
@@ -772,7 +777,7 @@ class ContasController extends Controller
                                             ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.vencimentoConta', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }else{
                                         $secretarias = Secretaria::all();
                                         $contas = Conta::join('tblContratos', 'tblContratos.id', '=', 'tblContas.idContrato')
@@ -786,7 +791,7 @@ class ContasController extends Controller
                                             ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.vencimentoConta', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 } else {
                                     $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
@@ -809,7 +814,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.vencimentoConta', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                        }else{
                                         $secretarias = Secretaria::whereIn('id', $ids)
                                             ->get();
@@ -825,7 +830,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.vencimentoConta', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 }
                         break;
@@ -848,7 +853,7 @@ class ContasController extends Controller
                                             ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.criado_em', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }else{
                                         $secretarias = Secretaria::all();
                                         $contas = Conta::join('tblContratos', 'tblContratos.id', '=', 'tblContas.idContrato')
@@ -862,7 +867,7 @@ class ContasController extends Controller
                                             ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.criado_em', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 } else {
                                     $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
@@ -884,7 +889,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.criado_em', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }else{
                                         $secretarias = Secretaria::whereIn('id', $ids)
                                             ->get();
@@ -900,7 +905,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.criado_em', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 }
                         break;
@@ -923,7 +928,7 @@ class ContasController extends Controller
                                             ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.AprovadoEm', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }else{
                                         $secretarias = Secretaria::all();
                                         $contas = Conta::join('tblContratos', 'tblContratos.id', '=', 'tblContas.idContrato')
@@ -937,7 +942,7 @@ class ContasController extends Controller
                                             ->where('tblFornecedor.nomeFantasia', 'LIKE', "%" . $request->get('valor') . "%")
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.AprovadoEm', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 } else {
                                     $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
@@ -959,7 +964,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.AprovadoEm', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }else{
                                         $secretarias = Secretaria::whereIn('id', $ids)
                                             ->get();
@@ -975,7 +980,7 @@ class ContasController extends Controller
                                             ->whereIn('tblContratos.idSecretaria', $ids)
                                             ->where('tblContratos.idSecretaria', 'LIKE', "%" . $request->get('sec') . "%")
                                             ->whereBetween('tblContas.AprovadoEm', [$datain, $datafim])
-                                            ->paginate(5);
+                                           ->get();
                                     }
                                 }
                         break;

@@ -44,7 +44,7 @@
             </div>
             </div>
                 <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
+                <div class="panel panel-default table-responsive">
                     <div class="panel-body">
                         @if(Session::has('success'))
                             <div class="alert alert-info">

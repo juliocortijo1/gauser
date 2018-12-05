@@ -56,7 +56,7 @@
 
                                 </div>
                             </div>
-                                <div class="panel panel-default align">
+                                <div class="panel panel-default align table-responsive">
                                 @if($assinatura->count())
                                     <img  height="251" src="{{URL::to('/').$assinatura[0]->assinatura}}" class="img-responsives" align="center"/>
                             @endif

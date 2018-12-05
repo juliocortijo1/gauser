@@ -160,7 +160,7 @@
         </div>
 
         <div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default">
+            <div class="panel panel-default table-responsive">
                 <div class="panel-body">
                     <div class="col-md-10">    <h4><strong>
                                 @switch($tipo)
@@ -289,7 +289,7 @@
                             </tbody>
 
                         </table>
-                        {{ $contas->links() }}
+                      
                     </div>
 
                 </div>
