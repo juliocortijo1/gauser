@@ -147,7 +147,7 @@
 
                                     <!-- Botão: Voltar -->
                                     <a class="btn btn-default" style="width: 100px;"
-                                       type="submit" href="{{route('contas.create')}}">
+                                       type="submit" href="{{ redirect()->back()->getTargetUrl() }}">
                                         <span class="glyphicon glyphicon-backward"></span>
                                         Voltar
                                     </a>

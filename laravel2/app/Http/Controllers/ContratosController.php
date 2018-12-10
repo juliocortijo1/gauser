@@ -103,7 +103,7 @@ class ContratosController extends Controller
         $contratos = Contratos::join('tblFornecedor', 'tblContratos.idFornecedor', '=', 'tblFornecedor.id')
             ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
             ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
-            ->paginate(5);
+            ->get();
         }else{
             $ids=AssignSecretaria::where('idUsuario',\auth()->user()->id)
                 ->select('idSecretaria')
@@ -112,7 +112,7 @@ class ContratosController extends Controller
                 ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
                 ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
                 ->whereIn('tblSecretaria.id',$ids)
-                ->paginate(5);
+                ->get();
         }
         return  view('contrato.search',compact('contratos'))->with('i',(request()->input('page',1) -1) *5);
     }
@@ -159,6 +159,7 @@ class ContratosController extends Controller
 
     public function searchFor(Request $request)
     {
+        $dataForm = $request->all();
         switch($request->get('type'))
         {
             case 'f':
@@ -166,31 +167,31 @@ class ContratosController extends Controller
                     ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
                     ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
                     ->where('tblFornecedor.nomeFantasia','LIKE',"%".$request->get('valor')."%")
-                    ->paginate(5);
+                    ->get();
                 break;
             case 's':
                 $contratos = Fornecedor::join('tblContratos', 'tblContratos.idFornecedor', '=', 'tblFornecedor.id')
                 ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
                 ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
                 ->where('tblSecretaria.descSecretaria','LIKE',"%".$request->get('valor')."%")
-                    ->paginate(5);
+                ->get();
             break;
             case 'd':
                 $contratos = Fornecedor::join('tblContratos', 'tblContratos.idFornecedor', '=', 'tblFornecedor.id')
                     ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
                     ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
                     ->where('tblContratos.descContrato','LIKE',"%".$request->get('valor')."%")
-                    ->paginate(5);
+                    ->get();
                 break;
             case 'ie':
                 $contratos = Fornecedor::join('tblContratos', 'tblContratos.idFornecedor', '=', 'tblFornecedor.id')
                     ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
                     ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
                     ->where('tblContratos.identContratoExt','LIKE',"%".$request->get('valor')."%")
-                    ->paginate(5);
+                    ->get();
                 break;
         }
-        return  view('contrato.search',compact('contratos'))->with('i',(request()->input('page',1) -1) *5);
+        return  view('contrato.search',compact('contratos','dataForm'))->with('i',(request()->input('page',1) -1) *5);
     }
 
     public function searchForToExtrato(Request $request)
@@ -202,28 +203,28 @@ class ContratosController extends Controller
                     ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
                     ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
                     ->where('tblFornecedor.nomeFantasia','LIKE',"%".$request->get('valor')."%")
-                    ->paginate(5);
+                    ->get();
                 break;
             case 's':
                 $contratos = Fornecedor::join('tblContratos', 'tblContratos.idFornecedor', '=', 'tblFornecedor.id')
                     ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
                     ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
                     ->where('tblSecretaria.descSecretaria','LIKE',"%".$request->get('valor')."%")
-                    ->paginate(5);
+                    ->get();
                 break;
             case 'd':
                 $contratos = Fornecedor::join('tblContratos', 'tblContratos.idFornecedor', '=', 'tblFornecedor.id')
                     ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
                     ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
                     ->where('tblContratos.descContrato','LIKE',"%".$request->get('valor')."%")
-                    ->paginate(5);
+                    ->get();
                 break;
             case 'ie':
                 $contratos = Fornecedor::join('tblContratos', 'tblContratos.idFornecedor', '=', 'tblFornecedor.id')
                     ->join('tblSecretaria', 'tblContratos.idSecretaria', '=', 'tblSecretaria.id')
                     ->select('tblContratos.id','tblFornecedor.nomeFantasia', 'tblContratos.descContrato', 'tblContratos.identContratoExt','tblContratos.statusContrato','tblSecretaria.descSecretaria')
                     ->where('tblContratos.identContratoExt','LIKE',"%".$request->get('valor')."%")
-                    ->paginate(5);
+                    ->get();
                 break;
         }
         return  view('contrato.searchCreate',compact('contratos'))->with('i',(request()->input('page',1) -1) *5);

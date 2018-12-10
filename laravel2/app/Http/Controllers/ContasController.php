@@ -233,7 +233,7 @@ class ContasController extends Controller
 
     public function searchFor(Request $request){
 
-
+        
 
         if($request->get('type_date') == 'sd') {
             switch ($request->get('type')) {
@@ -411,12 +411,10 @@ class ContasController extends Controller
                                     , 'tblContas.vencimentoConta', 'tblContas.criado_em', 'tblContas.idContestacao'
                                     , 'tblContas.idContrato', 'tblSecretaria.descSecretaria', 'tblFornecedor.nomeFantasia'
                                     , 'tblContratos.descContrato')
-                                ->where('tblContas.statusConta', 'LIKE',$request->get('st_ex'))
-                                ->where('tblContas.NumeroBancario', 'LIKE', $request->get('valor'));
-                                if($request->get('sec') <> '%'){
-                                    $contas->where('tblContratos.idSecretarias', 'LIKE',$request->get('sec'));
-                                }
-                                    $contas->get();
+                                ->where('tblContas.statusConta', 'LIKE','%'.$request->get('st_ex').'%')
+                                ->where('tblContas.NumeroBancario', 'LIKE','%'. $request->get('valor').'%')
+                                ->where('tblContratos.idSecretaria', 'LIKE','%'.$request->get('sec').'%')
+                                ->get();
                         }
                     } else {
                         $ids = AssignSecretaria::where('idUsuario', \auth()->user()->id)
